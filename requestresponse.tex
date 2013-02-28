@@ -1,0 +1,98 @@
+\section{Nachrichtenmodell}
+
+Der Nachrichtenaustausch in \ac{CoAP} basiert auf dem Versand von Nachrichten
+via \ac{UDP}.
+Jede Nachricht besitzt eine Message-ID, welche zur Duplikaterkennung genutzt
+wird.
+Zuverlässigkeit kann durch das Versenden einer \acf{CON}-Nachricht erreicht
+werden.
+Solche Nachrichten werden mit einem Standard-Timeout erneut versendet, bis sie
+mit einer \ac{ACK}-Nachricht mit der selben Message-ID vom Empfänger bestätigt
+werden oder eine maximale Anzahl von Retransmits erreicht haben.
+Wenn der Empfänger die Nachricht nicht verarbeiten kann und diesen Fehler auch
+in keiner Antwort ausdrücken kann, dann antwortet der Sender statt mit einem
+\ac{ACK} mit einer \acf{RST}-Nachricht.
+
+Wenn eine Nachricht nicht zuverlässig übertragen werden muss, weil sie beispielsweise in einem
+regelmäßigen Intervall versendet wird und ein Verlust einer einzelnen Nachricht akzeptiert werden
+kann, dann kann sie auch als \acf{NON}-Nachricht verschickt werden.
+Diese werden nicht mit einem \ac{ACK} quittiert, besitzen aber eine Message-ID zur
+Duplikaterkennung.
+Jedoch können sie genau wie \ac{CON}-Nachrichten auch mit einem \ac{RST} beantwortet werden.
+
+\section{Request-Response}
+
+\ac{CoAP} bietet zwei verschiedene Möglichkeiten um auf Requests zu antworten.
+Im folgenden werden beide Varianten kurz erläutert und deren Daseinsberechtigung begründet.
+
+\subsection{Piggy-backed Response}
+\label{piggybackedResponse}
+Bei einer piggy-backed Response wird die eigentliche Antwort direkt mit dem \ac{ACK} des
+Requests mitgesendet. Es wird somit unnötiger Netzwerktraffic eingespart.
+Im Gegenzug dazu ist es nötig, dass die Antwort quasi sofort verfügbar ist, da für das Senden eines
+\ac{ACK}s ein gewisser zeitlicher Rahmen eingehalten werden muss.
+Ein Beispiel für diese Art der Kommunikation zeigt
+Abbildung~\ref{fig:twoGetRequestsWithPiggyBacking}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.8\textwidth}
+    \lstinputlisting[]{sources/twoGetRequestsWithPiggyBacking.txt}
+    \caption{Get-Requests mit Piggy-backed Response}
+    \end{minipage}
+    \label{fig:twoGetRequestsWithPiggyBacking}
+\end{figure}
+
+
+\subsection{Separate Response}
+\label{seperateResponse}
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.75\textwidth}
+    \lstinputlisting[]{sources/confirmableRequest_separateResponse.txt}
+    \caption{Get-Request mit separater Response}
+    \end{minipage}
+    \label{fig:confirmableRequest_separateResponse}
+\end{figure}
+
+Abbildung~\ref{fig:confirmableRequest_separateResponse} zeigt einen beispielhaften
+Nachrichtenaustausch mit separaten Responses.
+Die Notwendigkeit der separaten Antworten besteht darin, dass eine Antwort eines Netzteilnehmers
+möglicherweise nicht sofort verfügbar ist.
+Um das \ac{ACK}-Timeout einzuhalten ist es somit nötig, einen Request vorerst zu bestätigen
+und die eigentliche Antwort auf die Anfrage erst zu einem späteren Zeitpunkt abzuschicken.
+Weiterhin kann ein Request auch vom Typ \ac{NON} sein, womit ein \ac{ACK} keine
+Antwortmöglichkeit darstellt.
+
+Probleme, auf welche man bei dieser Art des Nachrichtenaustauschs stößt, sind das Eintreffen der
+Response und des \ac{ACK}s in falscher Reihenfolge, sowie das Request-Response-Matching für
+beide Nachrichtenteile der Response.
+
+\subsection{Matching}
+\label{Matching}
+Das Matching lässt sich mit folgenden Regeln zusammenfassen
+\begin{description}
+    \item[Allgemein] Response muss vom Endpoint kommen, welcher auch Ziel des Requests war
+    \item[Piggy-backed] MessageID und Token müssen übereinstimmen
+    \item[Separate] nur Token muss übereinstimmen, ggf. MessageID für eine ACK-Message
+\end{description}
+Der Token ist elementarer Bestandteil jeder Nachricht, er kann 0 bis 8~Byte lang sein und wird
+vom Client generiert.
+Er dient der Zuordnung von Responses zu den entsprechenden Requests unabhängig von den
+eigentlichen Nachrichten.
+Jeder Request führt somit (ggf. implizit) einen Token mit.
+Responses auf einen Request können somit eindeutig über die Message-ID, den Token und das Tupel aus
+Quelle und Ziel der Nachricht identifiziert werden.
+
+\subsection{Discover}
+\label{Discover}
+Um vorhandene Ressourcen eines Servers zu erfahren, bietet \ac{CoAP} einen
+Discovery Mechanismus.
+Als Bedingung für das "`Entdecken"' eines Servers muss dieser lediglich auf dem
+Standardport von \ac{CoAP}(5683) lauschen. Je nachdem, welche Protokolle \ac{CoAP}
+zugrunde liegen, kann dann mittels Unicast, Multicast oder Broadcast der oder
+die Server abefragt werden. Speziell für das Discover wurde der \ac{URI}-Path
+\verb!/.well-known/core! reserviert. Dieser kann mittels einer \verb!GET!-Anfrage
+abgerufen wurden. Die Antwort enthält dann ein
+Linkformat (nach \cite{rfc6690}), in dem die angebotenen Ressourcen beschrieben
+sind.

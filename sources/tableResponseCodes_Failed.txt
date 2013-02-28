@@ -1,0 +1,20 @@
++======+=================================+===========+
+| Code | Description                     | Reference |
++======+=================================+===========+
+|  128 | 4.00 Bad Request                | [RFCXXXX] |
+|  129 | 4.01 Unauthorized               | [RFCXXXX] |
+|  130 | 4.02 Bad Option                 | [RFCXXXX] |
+|  131 | 4.03 Forbidden                  | [RFCXXXX] |
+|  132 | 4.04 Not Found                  | [RFCXXXX] |
+|  133 | 4.05 Method Not Allowed         | [RFCXXXX] |
+|  134 | 4.06 Not Acceptable             | [RFCXXXX] |
+|  140 | 4.12 Precondition Failed        | [RFCXXXX] |
+|  141 | 4.13 Request Entity Too Large   | [RFCXXXX] |
+|  143 | 4.15 Unsupported Content-Format | [RFCXXXX] |
+|  160 | 5.00 Internal Server Error      | [RFCXXXX] |
+|  161 | 5.01 Not Implemented            | [RFCXXXX] |
+|  162 | 5.02 Bad Gateway                | [RFCXXXX] |
+|  163 | 5.03 Service Unavailable        | [RFCXXXX] |
+|  164 | 5.04 Gateway Timeout            | [RFCXXXX] |
+|  165 | 5.05 Proxying Not Supported     | [RFCXXXX] |
++------+---------------------------------+-----------+

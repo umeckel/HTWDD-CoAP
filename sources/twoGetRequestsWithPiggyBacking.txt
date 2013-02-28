@@ -1,0 +1,13 @@
+Client              Server  Client              Server
+   |                  |        |                  |
+   |   CON [0xbc90]   |        |   CON [0xbc91]   |
+   | GET /temperature |        | GET /temperature |
+   |   (Token 0x71)   |        |   (Token 0x72)   |
+   +----------------->|        +----------------->|
+   |                  |        |                  |
+   |   ACK [0xbc90]   |        |   ACK [0xbc91]   |
+   |   2.05 Content   |        |  4.04 Not Found  |
+   |   (Token 0x71)   |        |   (Token 0x72)   |
+   |     "22.5 C"     |        |   "Not found"    |
+   |<-----------------+        |<-----------------+
+   |                  |        |                  |

@@ -1,0 +1,168 @@
+\section{Message Format}
+\subsection{Header Format}
+Der \ac{CoAP}-Header, wie in Abbildung~\ref{fig:messageformat} zu sehen, hat damit eine Mindestlänge von 4 Byte.
+Je nach Nachricht, folgt danach der Token und die Optionen, die für das Bearbeiten der Anfrage oder
+das Verstehen der Antwort wichtig sind.
+Vorallem bei Response-Nachrichten gibt es zusätzlich am Ende der Nachricht noch einen Payload, in
+dem beispielsweise die abgefragte Repräsentation einer Ressource enthalten ist.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.95\textwidth}
+    \lstinputlisting[]{sources/messageFormat.txt}
+    \end{minipage}
+\begin{center}
+\begin{tabular}{l|c|c|l}
+    Name & Länge & Wertebereich & Beschreibung \\
+    \hline
+    Version     & 2 - Bit   & 1     & CoAP Version \\
+    \hline
+    Type        & 2 - Bit   & 0~-~3 & Signalisiert den Nachrichtentyp \\
+                &           &   0   & Confirmable \\
+                &           &   1   & Non~-~Confirmable \\
+                &           &   2   & Acknowledgement\\
+                &           &   3   & Reset \\
+    \hline
+    Token Length& 4 - Bit   & 0 - 8 & Gibt die variable Länge des Tokens an \\
+                &           & 0 - 8 & Länge des Tokens \\
+                &           & 0 -15 & reserviert \\
+    \hline
+    Code        & 8 - Bit   &0 - 31,64 - 191    & Zeigt, ob es sich um eine \\
+                &           &   0    & Empty Message,\\
+                &           & 1 - 31 & Request Message (siehe Abb. \ref{table:requestCodes}) oder\\
+                &           &64 - 191& Response Message (siehe Abb. \ref{table:responseCodes}) handelt\\
+    \hline
+    Message ID  & 16 - Bit  &        & unigned integer in Network Byte order\\
+                &           &        & dient dem Request/Response Matching \\ 
+\end{tabular}
+\end{center}
+\caption{Message Format}
+\label{fig:messageformat}
+\end{figure}
+\subsubsection{Tokenlänge statt Option Count}
+Mit dem draft-13[\cite{draft-ietf-core-coap-13}] von CoAP, welches am 6. Dezember 2012 erschien, hat der Token nun seinen Weg direkt in
+den Header einer \ac{CoAP}-Nachricht gefunden.
+Vorher wurde der Token wie eine normale Option behandelt.
+Statt der jetzigen Token-Länge im Header wurde damals die Anzahl der Optionen
+übergeben.
+Doch da sich herausstellte, dass allein die Message-ID oft nicht ausreicht, um
+eine Response-Nachricht ihrer Request-Nachricht zuordnen zu können, oder man den
+Server damit nicht mehr die Wahl lassen konnte seine Antwort piggybacked (siehe
+Abschnitt~\ref{piggybackedResponse} \nameref{piggybackedResponse}) oder seperat
+(siehe Abschnitt~\ref{seperateResponse} \nameref{seperateResponse}) abzusenden.
+Bei der Verwendung von mehr als 14 Optionen musste
+damals ein zusätzlicher End-Of-Option-Marker benutzt werden, da im
+Option-Count-Feld mit der Länge 4 Bit nicht mehr angegeben werden konnte.
+Ein Option-Count von 15 bedeutete dementsprechend, dass der oben erwähnte Marker
+als Trenner zwischen Optionen und Payload diente.
+Statt dies nur in Ausnahmen so zu handhaben, ist es in der aktuellen Version
+Standard.
+Dafür müssen die Anzahl der Optionen nicht mehr angegeben werden und der, meist
+ohnehin verwendete, Token beschreibt in diesem Feld nun seine Länge.
+Bei einer Token Länge von 0 ist der Token mit dem Wert 0 anzusehen.
+Um nun allerdings Header, Optionen und Payload einer \ac{CoAP}-Nachricht
+auseinander halten zu können, verwendet man den oben bereits erwähnten
+End-Of-Option-Marker. Allerdings nennt er sich nun Payloadmarker, welcher aus
+einem Byte mit Einsen besteht.
+Bei Optionen ist deshalb nun darauf zu achten, dass das erste Byte eben genau
+nicht aus einem Byte voller Einsen besteht.
+
+\subsubsection{Offengelassene Erweiterungsmöglichkeiten}
+Wie leicht zu erkennen ist, ist im Header noch viel Platz für spätere Ideen im \ac{CoAP}-Protokoll.
+Das Token-Längenfeld darf gerade mal acht der 15 möglichen Werte annehmen.
+Dies reicht für die Tokenlänge auch aus, doch finden die restlichen Werte in dem Feld noch keine
+Verwendung.
+Ebenso gibt es noch viel Spielraum im Code-Feld.
+Dort werden nur 159 der 256 möglichen Werte ausgenutzt.
+Auch hier ist man schon sehr großzügig gewesen und hat sehr viele Fehlercodes aus dem
+HTTP-Protokoll (nach \cite{rfc2616}) übernommen.
+Es ist also durchaus möglich, dass bis zum Übergang des drafts in einen \ac{RFC}, noch weitere
+Anpassungen, Alternativen oder Optimierungen am Header vorgenommen werden.
+\newpage
+\subsection{Option Format}
+\label{optionFormat}
+In \ac{CoAP} können keine bis zu theoretisch unendlich vielen Optionen zwischen Header und 
+Payload eingehängt werden.
+Alle Optionen sind, wie in Abbildung~\ref{fig:optionformat} zu sehen, immer nach dem Schema \ac{TLV} aufgebaut.
+Als Besonderheit ist hier alledings zu beachten, dass der Typ nicht explizit
+angegeben wird (siehe Abschnitt~\ref{optiondelta} \nameref{optiondelta}).
+Bei den Optionen wurde vorallem darauf Wert gelegt, sie sehr variabel gestalten zu können.
+Optionen, die beispielsweise keinen Wert benötigen, wie die "`If-None-Match"' Option
+(Optionsnummer~5), wird so nur 1~Byte groß.
+Ebenso ist es aber auch möglich sehr große Optionswerte zu übetragen.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.75\textwidth}
+    \lstinputlisting[]{sources/optionFormat.txt}
+    \end{minipage}
+\begin{center}
+\begin{tabular}{l|c|c|l}
+    Name & Länge & Wert & Beschreibung \\
+    \hline
+    Option Delta & 4 - Bit &  & Gibt die Optionsnummerndifferenz\\
+                            &&&zur vorherigen Option oder\\
+                            &&&von 0 bei der ersten Option an\\
+                 &       &0 - 12& Optionsnummerndifferenz\\
+                 &       &13& 8 - Bit Options Delta folgt\\
+                 &       &14& 16 - Bit Options Delta folgt\\
+                 &       &15& Reserviert für Payload Marker\\
+    \hline
+    Options Length & 4 - Bit &  & Gibt die Länge des\\ 
+                            &&&Optionswertes an\\
+                 &       &0 - 12& Länge in Bytes\\
+                 &       &13& 8 - Bit Options Länge folgt\\
+                 &       &14& 16 - Bit Options Länge folgt\\
+                 &       &15& Reserviert\\
+    \hline
+    optionales Delta& 8 - Bit  &Delta - 13& Für Werte zwischen 13 - 268 \\
+    \hline
+    optionales Delta& 16 - Bit &Delta - 269& Für Werte zwischen 269 - 65804\\    
+    \hline
+    optionale Länge& 8 - Bit  &Länge - 13& Für Werte zwischen 13 - 268  \\
+    \hline
+    optionale Länge& 16 - Bit &Länge - 269& Für Werte zwischen 269 - 65804\\
+    \hline
+    Option Value &Option Length&& Wert der Option
+\end{tabular}
+\end{center}
+\caption{Option Format}
+\label{fig:optionformat}
+\end{figure}
+\subsubsection{Optionsnummern Differenz}
+\label{optiondelta}
+Da sich einige Optionen wiederholen können, wäre es nicht sinnvoll immer die komplette Optionsnummer
+zu übertragen, wenn diese sehr groß ist.
+Aus diesem Grund wird bei \ac{CoAP} immer die Differenz zur vorherigen Optionsnummer angegeben.
+Das bedeutet, dass eine Folge von gleichen Optionen mit einer großen Optionsnummer nur ein Delta von 0
+angeben müssen, anstatt ihrer Optionsnummer.
+Dies hat als Nebeneffekt zur Folge, das die Optionen sortiert nach ihrer Optionsnummer aufgelistet
+werden, da Rückwärtssprünge nicht möglich sind.
+
+Ein Problem hat das Delta-Prinzip allerdings, denn werden große Sprünge gemacht, kann das 4-Bit
+große Feld unter Umständen nicht ausreichen.
+In frühen \ac{CoAP}-Versionen wurden deshalb sogenannte Fencepost-Optionen eingefügt.
+Diese hatten als Optionsnummer immer ein Vielfaches von 14.
+Wollte man beispielsweise als erstes eine Option mit der Nummer 30 an seine Nachricht hängen, so
+musste man erst 2 Optionen mit dem Delta 14 angeben und erst danach die Option mit einem Delta von
+2.
+Es wurden also 2 Bytes für die Fencepost Optionen benötigt um diesen Sprung durchführen zu können.
+Ab CoAP-12[\cite{draft-ietf-core-coap-12}] gibt es nun keine Fencepost Optionen mehr.
+Dafür gibt es jetzt sogenannte "`Extended"'-Felder.
+Werden große Sprünge benötigt oder ist der Wert der Option sehr lang, so gibt es extra Felder um
+diesen großen Wert auszudrücken.
+Bei unserer Option mit der Nummer 30 beisielsweise, würden wir als Option-Delta die 13 eintragen und
+haben uns so ein 8-Bit großes Extended-Delta-Feld , wie oben beschrieben, reserviert.
+In diesem Feld brauchen wir nun nur noch eine 17 (= 30 - 13) eintragen.
+Anstatt wie bei der Fencepost-Methode 2 Byte für diesen großen Sprung zu bezahlen, zahlen wir mit
+der Extended-Feld-Methode nur noch 1 Byte.
+Bei größeren Sprüngen, ist die Ersparnis noch größer.
+
+\subsubsection{Optionswerte}
+In \ac{CoAP}-Optionen gibt es nur vier verschiedene Typen, die auftreten können.
+Eine Option hat auch immer den gleichen Datentyp, wie in \cite{draft-ietf-core-coap-13} beschrieben(siehe Abbildung~\ref{table:coapOptions}).
+Es muss also nicht jedes mal in der Option beschrieben werden, in welchem Format der Optionswert übertragen wurde.
+\begin{description}
+\item[empty] Kein Optionswert (0-Byte Sequenz von Bytes)
+\item[opaque] eine Sequenz von Bytes, die nicht interpretiert werden muss
+\item[uint] eine nicht-negative Zahl in Network Byte Order
+\item[string] ein Unicode String kodiert in \ac{UTF-8} (nach \cite{rfc3629}) als Net-Unicode form (nach \cite{rfc5198})
+\end{description} 

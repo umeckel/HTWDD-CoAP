@@ -1,0 +1,14 @@
++-------------------------------------------+
+|   127 Byte Frame       | Physical and     |
+| -  25 Byte MAC         | Data Link        |
+| -  21 Byte AES-CCM-128 | Layer            |
+|------------------------+------------------|
+| -   7 Byte 6LowPAN/UDP | Netowork and     |
+|                        | Transport Layer  |
+|-------------------------------------------|
+|    74 Byte             | Application Layer|
+|------------------------+------------------|
+| -   4 Byte Header      | CoAP Header      |
+|-------------------------------------------|
+|    70 Byte for CoAP Options and Payload   |
++-------------------------------------------+

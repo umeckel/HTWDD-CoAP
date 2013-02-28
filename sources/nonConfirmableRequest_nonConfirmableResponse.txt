@@ -1,0 +1,12 @@
+   Client  Server
+      |      |
+      |      |
+      +----->|     Header: GET (T=NON, Code=1, MID=0x7d40)
+      | GET  |      Token: 0x75
+      |      |   Uri-Path: "temperature"
+      |      |
+      |      |
+      |<-----+     Header: 2.05 Content (T=NON, Code=69, MID=0xad7d)
+      | 2.05 |      Token: 0x75
+      |      |    Payload: "22.3 C"
+      |      |

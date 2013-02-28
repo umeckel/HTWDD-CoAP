@@ -1,0 +1,23 @@
++=====+===+===+===+===+================+========+========+=============+
+| No. | C | U | N | R | Name           | Format | Length | Default     |
++=====+===+===+===+===+================+========+========+=============+
+|   1 | x |   |   | x | If-Match       | opaque | 0-8    | (none)      |
+|   3 | x | x | - |   | Uri-Host       | string | 1-255  | (see below) |
+|   4 |   |   |   | x | ETag           | opaque | 1-8    | (none)      |
+|   5 | x |   |   |   | If-None-Match  | empty  | 0      | (none)      |
+|   7 | x | x | - |   | Uri-Port       | uint   | 0-2    | (see below) |
+|   8 |   |   |   | x | Location-Path  | string | 0-255  | (none)      |
+|  11 | x | x | - | x | Uri-Path       | string | 0-255  | (none)      |
+|  12 |   |   |   |   | Content-Format | uint   | 0-2    | (none)      |
+|  14 |   | x | - |   | Max-Age        | uint   | 0-4    | 60          |
+|  15 | x | x | - | x | Uri-Query      | string | 0-255  | (none)      |
+|  16 |   |   |   | x | Accept         | uint   | 0-2    | (none)      |
+|  20 |   |   |   | x | Location-Query | string | 0-255  | (none)      |
+|  35 | x | x | - |   | Proxy-Uri      | string | 1-1034 | (none)      |
+|  39 | x | x | - |   | Proxy-Scheme   | string | 1-255  | (none)      |
++-----+---+---+---+---+----------------+--------+--------+-------------+
+
+         C=Critical, U=Unsafe, N=No-Cache-Key, R=Repeatable
+
+      Uri-Host=destination IP literal, Uri-Port=destination UDP Port
+                            of request message

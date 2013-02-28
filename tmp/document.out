@@ -1,0 +1,45 @@
+\BOOKMARK [1][-]{section*.2}{Abk\374rzungsverzeichnis}{}
+\BOOKMARK [1][-]{section*.3}{Glossar}{}
+\BOOKMARK [1][-]{section.1}{Einleitung}{}
+\BOOKMARK [2][-]{subsection.1.1}{Features}{section.1}
+\BOOKMARK [2][-]{subsection.1.2}{Abgrenzung und Ziel}{section.1}
+\BOOKMARK [1][-]{section.2}{Message Format}{}
+\BOOKMARK [2][-]{subsection.2.1}{Header Format}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.1.1}{Tokenl\344nge statt Option Count}{subsection.2.1}
+\BOOKMARK [3][-]{subsubsection.2.1.2}{Offengelassene Erweiterungsm\366glichkeiten}{subsection.2.1}
+\BOOKMARK [2][-]{subsection.2.2}{Option Format}{section.2}
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Optionsnummern Differenz}{subsection.2.2}
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Optionswerte}{subsection.2.2}
+\BOOKMARK [1][-]{section.3}{Optionen}{}
+\BOOKMARK [2][-]{subsection.3.1}{Eigenschaften}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Critical / Elective}{subsection.3.1}
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Proxy Unsafe/Safe}{subsection.3.1}
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Repeatable}{subsection.3.1}
+\BOOKMARK [3][-]{subsubsection.3.1.4}{L\344ngen und Standardwerte}{subsection.3.1}
+\BOOKMARK [2][-]{subsection.3.2}{Die Optionen im Einzelnen}{section.3}
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Uri-Host, Uri-Port, Uri-Path, Uri-Query}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.2}{ETag}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Max-Age}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.4}{Location-Path, Location-Query}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.5}{Proxy-Uri, Proxy-Scheme}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.6}{Content Format}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.7}{Accept}{subsection.3.2}
+\BOOKMARK [3][-]{subsubsection.3.2.8}{Bedingte Anfragen}{subsection.3.2}
+\BOOKMARK [1][-]{section.4}{Nachrichtenmodell}{}
+\BOOKMARK [1][-]{section.5}{Request-Response}{}
+\BOOKMARK [2][-]{subsection.5.1}{Piggy-backed Response}{section.5}
+\BOOKMARK [2][-]{subsection.5.2}{Separate Response}{section.5}
+\BOOKMARK [2][-]{subsection.5.3}{Matching}{section.5}
+\BOOKMARK [2][-]{subsection.5.4}{Discover}{section.5}
+\BOOKMARK [1][-]{section.6}{Erweiterungen}{}
+\BOOKMARK [2][-]{subsection.6.1}{Block - nach draft-ietf-core-block-10}{section.6}
+\BOOKMARK [2][-]{subsection.6.2}{Observe - nach draft-ietf-core-observe-07}{section.6}
+\BOOKMARK [3][-]{subsubsection.6.2.1}{\334berwachen von Ressourcen}{subsection.6.2}
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Probleme mit Safe-to-Forward}{subsection.6.2}
+\BOOKMARK [2][-]{subsection.6.3}{Groupcomm nach draft-ietf-core-groupcomm-05}{section.6}
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Notwendigkeit}{subsection.6.3}
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Richtlinien}{subsection.6.3}
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Probleme}{subsection.6.3}
+\BOOKMARK [1][-]{section.7}{Zusammenfassung}{}
+\BOOKMARK [1][-]{appendix.A}{Tabellen}{}
+\BOOKMARK [1][-]{section*.8}{Quellenverzeichnis}{}

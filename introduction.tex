@@ -1,0 +1,45 @@
+\section{Einleitung}
+Das \ac{CoAP} ist ein für den Einsatz in Sensornetzen konzipiertes Transferprotokoll.
+Spezielle Randbedingungen in solchen Netzen sind wenig \ac{RAM} und \ac{ROM} der einzelnen
+Kommunikationsteilnehmer, welche z.B. durch 8-Bit Mikrocontroller realisiert werden.
+Weiterhin bieten Sensornetze im Vergleich zu üblichen Computernetzen nur geringe Datenraten und
+haben möglicherweise hohe Paketfehlerraten.
+
+Ein mögliches Netz in dem \ac{CoAP} zum Einsatz kommen könnte, wäre
+beispielsweise ein \ac{6LoWPAN}-Netz, in dem \ac{CoAP}-Nachrichten via \ac{UDP}
+versendet werden.
+Außer UDP in der Transportschicht, werden jedoch keine weiteren unterliegenden
+Schichten für \ac{CoAP} spezifiziert.
+Es wird lediglich versucht, den Overhead der einzelnen Nachrichten gering zu
+halten.
+Zudem hat \ac{CoAP} eine \ac{REST}-Architektur (siehe \cite{Fielding:2000:ASD:932295}), weshalb die Last auf
+speicherarmen Knoten nicht so hoch ist, da keine Status gehalten werden müssen.
+Wie genau das versucht wird zu erreichen, wird später in diesem Dokument
+erläutert.
+Die Entwicklung von \ac{CoAP} wird von der \ac{CoRE}-Gruppe vorangetrieben. Der
+erste Entwurf wurde im Jahr 2010 veröffentlicht.
+Zum Zeitpunkt der Erstellung dieses Dokuments war Version~13 (siehe \cite{draft-ietf-core-coap-13}) aktuell. Es wird
+versucht auf einige Änderung einzugehen, die während der Entwicklung entstanden
+sind.
+
+\subsection{Features}
+In \cite{draft-ietf-core-coap-13} wird \ac{CoAP} mit folgenden Features beworben:
+\begin{itemize}
+    \item Constrained web protocol fulfilling \ac{M2M} requirements.
+    \item \ac{UDP} binding with optional reliability supporting unicast and multicast requests.
+    \item Asynchronous message exchanges.
+    \item Low header overhead and parsing complexity.
+    \item \ac{URI} and Content-type support.
+    \item Simple proxy and caching capabilities.
+    \item A stateless \ac{HTTP} mapping, allowing proxies to be built providing access to \ac{CoAP}
+    resources via \ac{HTTP} in a uniform way or for \ac{HTTP} simple interfaces to be realized
+    alternatively over \ac{CoAP}.
+    \item Security binding to \ac{DTLS}.
+\end{itemize}
+
+\subsection{Abgrenzung und Ziel}
+Ziel von \ac{CoAP} ist es nicht, ein komprimiertes \ac{HTTP} umzusetzen, sondern viel mehr einen
+Teil von \ac{REST}, wie es in \ac{HTTP} zum Einsatz kommt, bereitzustellen.
+Insbesondere Optimierungen für eine \ac{M2M}-Kommunikation wie beispielsweise eingebaute Discovery-
+Mechanismen, Unterstützung für Multicasts und asynchronen Nachrichtenaustausch sollen durch
+\ac{CoAP} bereitgestellt werden.

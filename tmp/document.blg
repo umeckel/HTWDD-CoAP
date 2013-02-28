@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: document.aux
+A level-1 auxiliary file: acronyms.aux
+A level-1 auxiliary file: glossary.aux
+A level-1 auxiliary file: introduction.aux
+A level-1 auxiliary file: structure.aux
+A level-1 auxiliary file: options.aux
+A level-1 auxiliary file: requestresponse.aux
+A level-1 auxiliary file: extensions.aux
+A level-1 auxiliary file: summary.aux
+A level-1 auxiliary file: appendix.aux
+The style file: styles/alphadin.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 472446405560.
+Database file #1: rfc.bib
+Database file #2: drafts.bib
+Database file #3: books.bib
+You've used 15 entries,
+            4793 wiz_defined-function locations,
+            985 strings with 9355 characters,
+and the built_in function-call counts, 10211 in all, are:
+= -- 1071
+> -- 366
+< -- 311
++ -- 389
+- -- 139
+* -- 726
+:= -- 1819
+add.period$ -- 40
+call.type$ -- 15
+change.case$ -- 93
+chr.to.int$ -- 14
+cite$ -- 15
+duplicate$ -- 251
+empty$ -- 572
+format.name$ -- 238
+if$ -- 1969
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 84
+newline$ -- 114
+num.names$ -- 45
+pop$ -- 97
+preamble$ -- 1
+purify$ -- 123
+quote$ -- 0
+skip$ -- 561
+stack$ -- 0
+substring$ -- 498
+swap$ -- 77
+text.length$ -- 52
+text.prefix$ -- 3
+top$ -- 0
+type$ -- 172
+warning$ -- 0
+while$ -- 91
+width$ -- 18
+write$ -- 245

@@ -1,0 +1,50 @@
+\select@language {ngerman}
+\contentsline {section}{Abk\IeC {\"u}rzungsverzeichnis}{4}{section*.2}
+\contentsline {section}{Glossar}{6}{section*.3}
+\contentsline {section}{\numberline {1}Einleitung}{7}{section.1}
+\contentsline {subsection}{\numberline {1.1}Features}{7}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Abgrenzung und Ziel}{8}{subsection.1.2}
+\contentsline {section}{\numberline {2}Message Format}{9}{section.2}
+\contentsline {subsection}{\numberline {2.1}Header Format}{9}{subsection.2.1}
+\contentsline {subsubsection}{\numberline {2.1.1}Tokenl\IeC {\"a}nge statt Option Count}{10}{subsubsection.2.1.1}
+\contentsline {subsubsection}{\numberline {2.1.2}Offengelassene Erweiterungsm\IeC {\"o}glichkeiten}{10}{subsubsection.2.1.2}
+\contentsline {subsection}{\numberline {2.2}Option Format}{11}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Optionsnummern Differenz}{12}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Optionswerte}{12}{subsubsection.2.2.2}
+\contentsline {section}{\numberline {3}Optionen}{13}{section.3}
+\contentsline {subsection}{\numberline {3.1}Eigenschaften}{13}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Critical / Elective}{13}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Proxy Unsafe/Safe}{14}{subsubsection.3.1.2}
+\contentsline {subsubsection}{\numberline {3.1.3}Repeatable}{14}{subsubsection.3.1.3}
+\contentsline {subsubsection}{\numberline {3.1.4}L\IeC {\"a}ngen und Standardwerte}{15}{subsubsection.3.1.4}
+\contentsline {subsection}{\numberline {3.2}Die Optionen im Einzelnen}{15}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Uri-Host, Uri-Port, Uri-Path, Uri-Query}{15}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}ETag}{15}{subsubsection.3.2.2}
+\contentsline {paragraph}{Beispiel}{16}{section*.4}
+\contentsline {subsubsection}{\numberline {3.2.3}Max-Age}{16}{subsubsection.3.2.3}
+\contentsline {subsubsection}{\numberline {3.2.4}Location-Path, Location-Query}{17}{subsubsection.3.2.4}
+\contentsline {subsubsection}{\numberline {3.2.5}Proxy-Uri, Proxy-Scheme}{17}{subsubsection.3.2.5}
+\contentsline {subsubsection}{\numberline {3.2.6}Content Format}{17}{subsubsection.3.2.6}
+\contentsline {subsubsection}{\numberline {3.2.7}Accept}{18}{subsubsection.3.2.7}
+\contentsline {subsubsection}{\numberline {3.2.8}Bedingte Anfragen}{18}{subsubsection.3.2.8}
+\contentsline {section}{\numberline {4}Nachrichtenmodell}{20}{section.4}
+\contentsline {section}{\numberline {5}Request-Response}{20}{section.5}
+\contentsline {subsection}{\numberline {5.1}Piggy-backed Response}{20}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Separate Response}{20}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Matching}{22}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}Discover}{22}{subsection.5.4}
+\contentsline {section}{\numberline {6}Erweiterungen}{23}{section.6}
+\contentsline {subsection}{\numberline {6.1}Block - nach \cite {draft-ietf-core-block-10}}{23}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Observe - nach \cite {draft-ietf-core-observe-07}}{25}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}\IeC {\"U}berwachen von Ressourcen}{25}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Probleme mit Safe-to-Forward}{25}{subsubsection.6.2.2}
+\contentsline {subsection}{\numberline {6.3}Groupcomm nach \cite {draft-ietf-core-groupcomm-05}}{26}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Notwendigkeit}{26}{subsubsection.6.3.1}
+\contentsline {subsubsection}{\numberline {6.3.2}Richtlinien}{26}{subsubsection.6.3.2}
+\contentsline {paragraph}{Filtern durch \ac {6LBR} mit Hilfe von Routinginformationen}{27}{section*.5}
+\contentsline {paragraph}{Filtern durch \ac {6LBR} mit Hilfe von \ac {MLD}-Reports}{27}{section*.6}
+\contentsline {paragraph}{Filtern durch \ac {6LBR} mit Hilfe von Einstellungen}{27}{section*.7}
+\contentsline {subsubsection}{\numberline {6.3.3}Probleme}{27}{subsubsection.6.3.3}
+\contentsline {section}{\numberline {7}Zusammenfassung}{28}{section.7}
+\contentsline {section}{\numberline {A}Tabellen}{29}{appendix.A}
+\contentsline {section}{Quellenverzeichnis}{31}{section*.8}

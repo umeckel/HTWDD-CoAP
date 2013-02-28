@@ -1,0 +1,23 @@
++========+================+===========+
+| Number | Name           | Reference |
++========+================+===========+
+|      0 | (Reserved)     |           |
+|      1 | If-Match       | [RFCXXXX] |
+|      3 | Uri-Host       | [RFCXXXX] |
+|      4 | ETag           | [RFCXXXX] |
+|      5 | If-None-Match  | [RFCXXXX] |
+|      7 | Uri-Port       | [RFCXXXX] |
+|      8 | Location-Path  | [RFCXXXX] |
+|     11 | Uri-Path       | [RFCXXXX] |
+|     12 | Content-Format | [RFCXXXX] |
+|     14 | Max-Age        | [RFCXXXX] |
+|     15 | Uri-Query      | [RFCXXXX] |
+|     16 | Accept         | [RFCXXXX] |
+|     20 | Location-Query | [RFCXXXX] |
+|     35 | Proxy-Uri      | [RFCXXXX] |
+|     39 | Proxy-Scheme   | [RFCXXXX] |
+|    128 | (Reserved)     | [RFCXXXX] |
+|    132 | (Reserved)     | [RFCXXXX] |
+|    136 | (Reserved)     | [RFCXXXX] |
+|    140 | (Reserved)     | [RFCXXXX] |
++--------+----------------+-----------+

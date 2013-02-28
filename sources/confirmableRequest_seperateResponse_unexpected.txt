@@ -1,0 +1,18 @@
+   Client  Server
+      |      |
+      |      |
+      +----->|     Header: GET (T=CON, Code=1, MID=0x7d39)
+      | GET  |      Token: 0x64
+      |      |   Uri-Path: "temperature"
+    CRASH    |
+      |      |
+      |<- - -+     Header: (T=ACK, Code=0, MID=0x7d39)
+      |      |
+      |      |
+      |<-----+     Header: 2.05 Content (T=CON, Code=69, MID=0xad7c)
+      | 2.05 |      Token: 0x64
+      |      |    Payload: "22.3 C"
+      |      |
+      |      |
+      +- - ->|     Header: (T=RST, Code=0, MID=0xad7c)
+      |      |

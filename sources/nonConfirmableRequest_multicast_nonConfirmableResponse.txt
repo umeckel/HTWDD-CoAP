@@ -1,0 +1,21 @@
+   Client  ff02::1  A  B  C
+      |       |     |  |  |
+      |       |     |  |  |
+      +------>|     |  |  |   Header: GET (T=NON, Code=1, MID=0x7d41)
+      |  GET  |     |  |  |    Token: 0x86
+      |             |  |  |    Uri-Path: "temperature"
+      |             |  |  |
+      |             |  |  |
+      |<------------+  |  |   Header: 2.05 (T=NON, Code=69, MID=0x60b1)
+      |      2.05   |  |  |    Token: 0x86
+      |             |  |  |    Payload: "22.3 C"
+      |             |  |  |
+      |             |  |  |
+      |   X------------+  |   Header: 2.05 (T=NON, Code=69, MID=0x01a0)
+      |      2.05   |  |  |    Token: 0x86
+      |             |  |  |    Payload: "20.9 C"
+      |             |  |  |
+      |             |  |  |
+      |<------------------+   Header: 4.04 (T=NON, Code=132, MID=0x952a)
+      |      4.04   |  |  |    Token: 0x86
+      |             |  |  |

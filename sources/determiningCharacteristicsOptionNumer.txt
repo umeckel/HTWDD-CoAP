@@ -1,0 +1,3 @@
+   Critical = (onum & 1);
+   UnSafe = (onum & 2);
+   NoCacheKey = ((onum & 0x1e) == 0x1c);

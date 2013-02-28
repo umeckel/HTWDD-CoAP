@@ -1,0 +1,172 @@
+\section{Erweiterungen}
+\ac{CoAP} wie es in \cite{draft-ietf-core-coap-13} beschrieben ist,
+bietet die Möglichkeit \ac{REST}ful-Dienste in einem Low-Power-Netzwerk zu integrieren.
+Doch neben der Entwicklung des Protokolls selbst findet man auch viele Ideen auf
+dem \ac{IETF}-Datatracker \footnote{\url{http://datatracker.ietf.org/wg/core/}}.
+Einige Überlegungen betreffen die Integration von \ac{CoAP} in andere Netzwerke, wie
+zum Beispiel: "`Transport of \ac{CoAP} over \ac{SMS}, \ac{USSD} and \ac{GPRS}"'
+(siehe \cite{draft-becker-core-coap-sms-gprs-03}).
+Andere Drafts befassen sich mit Sicherheitsaspekten
+(siehe \cite{draft-bormann-core-ipsec-for-coap-00}), oder noch genauer mit der Thematik wie man
+mit schlafenden Knoten in einem Sensornetz umgehen soll
+(siehe \cite{draft-rahman-core-sleepy-01} und \cite{draft-rahman-core-sleepy-problem-statement-01}) und viele
+weitere mehr.
+Als Standard-Erweiterungen haben sich die drei folgenden herausgestellt.
+\subsection{Block - nach \cite{draft-ietf-core-block-10}}
+Für kleine Payloadgrößen muss man sich in \ac{CoAP} keine Gedanken über
+Fragmentierung unterliegender Schichten machen. Hat man jedoch größere
+Datenmengen zu übertragen, so wird einem durch Abbildung \ref{table:FramePayload}
+schnell bewusst, dass auch beim Einsatz von \ac{CoAP} mit eventuell vielen Optionen nicht viel
+Platz für den eigentlichen Payload bleibt. Sprengt man den 127-Byte-Rahmen, der vom
+\ac{PHY} vorgegeben ist, so müssen die unteren Schichten eine
+Fragmentierung durchführen. Um dies zu vermeiden, gibt es die Block-Erweiterung
+in \ac{CoAP}. Hier wird die Fragmentierung auf die Applikationsschicht angehoben.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.61\textwidth}
+    \lstinputlisting[basicstyle=\footnotesize]{sources/PacketPayload2.txt}
+    \caption{Aufteilung des 802.15.4 Frames}
+    \end{minipage}
+    \label{table:FramePayload}
+\end{figure}
+Dies bringt den Vorteil, dass die unteren Schichten, sprich die Adaptions- oder \ac{IP}-schicht,
+nicht damit belastet werden. Ein weiterer Vorteil ist das Acknowledgment der
+einzelnen Pakete. Tritt ein Fehler auf, so muss nicht das gesamte Paket
+wiederholt werden, sondern nur ein Teil davon.\\\\
+Um den Blocktransfer zu beschreiben, werden 3 Attribute in der Block-Option
+eingeführt.
+\begin{description}
+ \item[SZX] 
+ Die im jeden Request oder Response übermittelte Paketgröße. Sechs verschiedene
+ Größen sind vorgesehen, von $2^4=16$ bis $2^{10}=1024$~Bytes. Die Möglichkeit
+ von sehr hohen Paketgrößen ist für den Einsatz von \ac{CoAP} mit anderen Schichten
+ gedacht, als beispielsweise mit dem 802.15.4/\ac{6LoWPAN}/\ac{UDP} Stack. Bis auf den 
+ letzten Block einer Blockübertragung muss der Payload genau diese Größe annehmen.
+ Die Paketgröße wird in einem 3-Bit großen Feld angegeben, in der immer nur der 
+ Zweierexponent abzüglich 4 eingetragen ist.
+ \item[M-Flag] Dieses Attribut gibt an, ob es sich um das letzte Paket handelt, beziehungsweise
+ ob noch mehr Pakete vorhanden sind. Die Information wird in einem Bit kodiert. 
+\item[NUM] Die Blocknummer gibt an, welches Paket übermittelt, beziehungsweise angefragt,
+ wurde. Sie beginnt bei 0 und kann bis zu 1048576 ($2^{20}$) laufen. Die
+ Paketnummer wird entweder in 4,12 oder 20~Bit geschrieben.
+\end{description}
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.83\textwidth}
+    \lstinputlisting[basicstyle=\footnotesize]{sources/BlockOption.txt}
+    \caption{Optionen für den Blocktransfer}
+    \end{minipage}
+    \label{table:blockoption}
+\end{figure}
+Wie in Abbildung~\ref{table:blockoption} zu sehen ist, werden zwei Block-Optionen benötigt.
+Die \verb!Block1!-Option wird verwendet, wenn der Client Daten im Block-Modus zu dem Server
+senden möchte oder muss, weil der Server es verlangt.
+Die \verb!Block2!-Option wird verwendet, wenn bei einer \verb!GET!-Anfrage an den Server die
+Antwort im Block-Modus zurückgeschickt wird.
+Die genaue Belegung der Attribute je nach Anfrage soll hier allerdings nicht
+genauer erläutert werden.
+
+Die Block-Option selbst hat keine Beschreibung, wieviele Pakete noch kommen. Es
+gibt nur eine Paketnummer, die Blockgröße und ein Flag, was besagt, ob noch mehr
+Blöcke vorhanden sind. Da es in manchen Anwendungen notwendig ist, wurde ebenso
+auch die optionale Size-Option eingeführt. Mit Hilfe dieser Option kann man die
+Größe des eigentlichen Payloads angeben.
+
+Die Einführung der Block-Option hebt keinesfalls das \ac{REST}-Prinzip auf, denn
+weiterhin beschreiben alle Anfragen sich soweit, dass sie vom Server ausgeführt
+werden können, ohne sich einen Status zu merken.
+
+\subsection{Observe - nach \cite{draft-ietf-core-observe-07}}
+In Anbetracht der Tatsache, dass \ac{CoAP} dafür entwickelt ist, um mit möglichst wenig Overhead
+einen \ac{REST}ful Dienst zu ermöglichen, treten Probleme bei der Anwendung von \ac{CoAP} in
+Sensornetzen auf.
+Dort möchte man beispielsweise recht schnell mitbekommen, wann sich eine Tür geöffnet hat.
+Es bleibt also nur die Möglichkeit in engen Abständen den Zustand der Tür abzufragen.
+Gehen wir ein Stück weiter und stellen uns die Tür zu einem sehr selten frequentierten Raum vor, so
+wird sehr viel Aufwand und Netzlast erzeugt, um in einem aktzeptablen Abstand informiert zu werden,
+dass sich der Status der Tür geändert hat.
+Problem hier ist der Mechanismus der \ac{REST}-Struktur, in der immer der Client eine Anfrage
+abschickt und eine Antwort erhält und die Kommunikation damit abgeschlossen ist.
+\subsubsection{Überwachen von Ressourcen}
+Mit der Idee der Überwachung wird ein neuer Mechanismus in \ac{CoAP} eingeführt.
+Anstatt nur einmalig eine Antwort vom einen Server auf eine Anfrage zu bekommen, ist es möglich sich
+von dem Server über die Repräsentation einer Ressource informieren zu lassen.
+Das \ac{ODP}\cite{GAMMAETAL} wurde in \ac{CoAP} integriert mit der Observe-Option, welche in
+Abbildung~\ref{table:observeoption} dargestellt ist.
+ \begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.94\textwidth}
+    \lstinputlisting[basicstyle=\footnotesize]{sources/ObserveOption.txt}
+    \caption{Die Observe-Option}
+    \end{minipage}
+    \label{table:observeoption}
+\end{figure}
+Alle \ac{REST}-Eigenschaften bleiben dabei erhalten, doch ist es nun einem Client möglich auf eine
+Anfrage mehrere Antworten zu bekommen.
+Um dies zu realisieren, gibt es die Möglichkeit sich bei dem Server als Observer in eine Liste
+eintragen zu lassen.
+Ist man in der Liste, so erhält man von nun an bei Statuswechseln, gewissen abgelaufenen
+Zeitabständen eine Notification über die neue/aktuelle Repräsentation der überwachten Ressource.
+Die genaue Implementation soll in diesem Dokument hier nicht dargestellt werden, doch sei darauf
+hingewiesen, das es ebenso möglich ist die Observe-Option mit der ETag-Option zu kombinieren.
+\subsubsection{Probleme mit Safe-to-Forward}
+Seit dem 6. Februar 2013 ist eine Diskussion in der Mailingliste zu beobachten, bei der es darum
+geht, dass es Probleme seit dem Draft-12 (siehe \cite{draft-ietf-core-coap-12}) von \ac{CoAP} gibt.
+In diesem Draft wurde die Unterscheidung in Un-/Safe-to-Forward eingeführt.
+Diese Unterscheidung führt nun dazu, dass Proxys, welche zwar die Observe Funktion verstehen, aber
+möglicherweise andere Optionen nicht, welche die Überwachung aber beeinflussen.
+Ebenso tritt es dadurch auf das Clienten sich gegenseitig aus der Liste der Observer löschen.
+Derzeit tendiert die Diskussion wohl dahin ein weitere Unterscheidung der Optionen einzubauen.
+Neben dem Cache-Key, gibt es womöglich demnächst ein Observe-Key, welcher genutzt werden soll um
+die oben angesprochenen Probleme zu beheben.
+\subsection{Groupcomm nach \cite{draft-ietf-core-groupcomm-05}}
+\subsubsection{Notwendigkeit}
+Für \ac{CoAP} selbst wird nicht geklärt, wie eine Gruppenkommunikation auszusehen hat.
+Eine Gruppenkommunikation ist jedoch in der Praxis unerlässlich.
+Ein Beispiel hierfür wäre die Einteilung von Sensoren/Aktoren in einem Netz nach Typ oder Standort.
+Eine mögliche Gruppe von Aktoren wären alle Lichtschalter im Haus oder alle vorhandenen
+Thermostate.
+Es wird Wert darauf gelegt, dass sowohl in \ac{CoAP} als auch in \ac{IP}-Multicasts keine
+Änderungen hierfür vorgenommen werden müssen.
+Insbesondere wie einzelne Protokolle für verschiedene Szenarien miteinander eingesetzt werden
+müssen wird in dem Dokument erläutert.
+\subsubsection{Richtlinien}
+Da \ac{IP}-Multicasts weit verbreitet sind, bildet dieser Mechanismus die Grundlage für die
+Gruppenkommunikation.
+Um Multicasts über mehrere Subnetze zu ermöglichen ist es nötig Routing-Protokolle oder
+Forwarding-Protokolle einzusetzen.
+Für den Einsatz denkbar wäre hier beispielsweise \ac{RPL} oder \ac{MPL}.
+Weiterhin wird noch ein sogenanntes Listener-Protokoll benötigt, um einzelne Geräte Gruppen
+zuzuordnen.\\\\
+Die Gruppen-\ac{URI} muss in der Nachricht die Request-\ac{URI} sein.
+Der Authority-Teil muss eine Gruppen-\ac{IP}-Multicast-Adresse oder ein Hostname sein, welcher zu einer
+solchen aufgelöst werden kann.
+Folgende Beispiele für mögliche Gruppen-\ac{URI}s werden aufgelistet:
+\begin{description}
+\item[all.bldg6.example.com] all nodes in building 6
+\item[all.west.bldg6.example.com] all nodes in west wing, building 6
+\item[all.floor1.west.bldg6.examp...] all nodes in floor 1, west wing, building 6
+\item[all.bu036.floor1.west.bldg6...] all nodes in office bu036, floor1, west wing, building 6
+\end{description}
+Der Gruppen-\ac{FQDN} muss via \ac{DNS} aufgelöst werden können.\\\\
+Weiterhin wird geklärt, wie ein Knoten die Mitgliedschaft einer Multicast-Gruppe ankündigen kann.
+Es wird die Vorgehensweise für die Protokolle \ac{MLD}, \ac{RPL}, \ac{MPL} kurz erläutert, was im
+Umfang dieses Dokuments hier aber zu weit führen würde.\\\\
+Für Multi-LoWPAN-Szenarien wird empfohlen, Filtering-Regeln einzuführen, um unnötige Netzlast zu
+vermeiden. 
+\paragraph{Filtern durch \ac{6LBR} mit Hilfe von Routinginformationen}
+Dies ermöglicht es dem \ac{6LBR}, Multicast-Nachrichten nur in Netze weiterzuleiten, in denen auch
+ein Empfänger für die Nachricht existiert
+\paragraph{Filtern durch \ac{6LBR} mit Hilfe von \ac{MLD}-Reports}
+Gleich dem vorherigen Verfahren, jedoch basierend auf \ac{MLD}-Reports.
+\paragraph{Filtern durch \ac{6LBR} mit Hilfe von Einstellungen}
+Nutzen von Filter-Tabellen mit Blacklists bzw. Whitelists für alle \ac{6LBR} bzw. für spezifische
+\ac{6LBR}.
+\subsubsection{Probleme}
+Nach draft-13 (siehe \cite{draft-ietf-core-coap-13}) von \ac{CoAP} muss die Gruppenkommunikation im
+\ac{NoSec}-Modus erfolgen.
+Weiterhin darf kein \ac{DTLS}-gesichertes \ac{CoAP} und auch kein \ac{IPSec} verwendet werden.
+Aus diesen Gründen müssen Sicherheitsvorkehrungen auf anderen Schichten vorgenommen werden.
+Für die Zukunft wird darauf spekuliert, dass \ac{DTLS}-basierte \ac{IP}-Multicasts oder andere
+Herangehensweisen die Sicherheitsprobleme lösen könnten.
+Aktuell ist aber noch kein wirklicher Lösungsansatz für diese Probleme vorhanden.

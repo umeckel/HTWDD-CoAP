@@ -1,0 +1,17 @@
+   Client  Server
+      |      |
+      |      |
+      +----X |     Header: GET (T=CON, Code=1, MID=0x7d36)
+      | GET  |      Token: 0x31
+      |      |   Uri-Path: "temperature"
+   TIMEOUT   |
+      |      |
+      +----->|     Header: GET (T=CON, Code=1, MID=0x7d36)
+      | GET  |      Token: 0x31
+      |      |   Uri-Path: "temperature"
+      |      |
+      |      |
+      |<-----+     Header: 2.05 Content (T=ACK, Code=69, MID=0x7d36)
+      | 2.05 |      Token: 0x31
+      |      |    Payload: "22.3 C"
+      |      |

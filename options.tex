@@ -1,0 +1,270 @@
+\section{Optionen}
+Im Abschnitt~\ref{optionFormat} \nameref{optionFormat} ist bereits der Aufbau einer Option erläutert.
+In diesem Kapitel soll einmal genau der Aufbau der Optionsnummer betrachtet werden und ebenso
+welche verschiedenen Optionen CoAP zur Verfügung stellt und wozu diese notwendig sind.
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.97\textwidth}
+    \lstinputlisting[basicstyle=\footnotesize]{sources/tableOptions.txt}
+    \caption{CoAP Optionen}
+    \end{minipage}
+    \label{table:coapOptions}
+\end{figure}
+\subsection{Eigenschaften}
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{.5\textwidth}
+    \lstinputlisting[basicstyle=\footnotesize]{sources/optionNumberMask.txt}
+    \caption{Optionsnummernmaske}
+    \end{minipage}
+    \label{table:optionnumbermask}
+\end{figure}
+\subsubsection{Critical / Elective}
+Ist eine Option als kritisch markiert, muss diese verstanden werden, andernfalls führt sie zu
+folgenden drei Fehlerfällen:
+\begin{description}
+  \item [\ac{CON}-Request] 
+  Kann die Option bei einer \ac{CON}-Request-Nachricht nicht verstanden
+werden, muss sie mit dem Fehlercode \verb!4.02! (Bad Option) beantwortet werden.
+Zusätzlich sollte im Payload einer solchen Antwort eine kurze,
+menschlich lesbare, \ac{UTF-8} kodierte Nachricht stehen, die den Fehler beschreibt.
+Beispielsweise bei welcher Option der Fehler überhaupt auftrat und was nicht
+verstanden wurde oder man beispielsweise die Option überhaupt nicht kennt.
+  \item [\ac{CON}-Response]
+  Kann bei einer \ac{CON}-Response oder einer durch
+Piggy-backed-Response (siehe Abschnitt~\ref{piggybackedResponse} \nameref{piggybackedResponse}) 
+erhaltenen Nachricht eine kritische Option nicht verstanden werden, muss
+diese mit einer \ac{RST}-Nachricht beantwortet werden und die Response selbst aber ignoriert
+werden.
+  \item [\ac{NON}-Nachricht]
+  Nachrichten mit einer oder mehreren nichtverstandenen kritischen Optionen müssen ignoriert
+  werden.
+  Der Empfänger einer solchen fehlerhaften oder nicht verstandenen Option kann diese Nachricht auch
+  durch eine \ac{RST}-Nachricht beantworten, muss sie aber dennoch ignorieren. 
+\end{description}
+Kann die Option nicht verstanden werden und ist aber nicht kritisch, so wird die Option ignoriert,
+die Nachricht allerdings nicht.
+
+Ob eine Option kritisch ist oder nicht, entscheidet sich durch das niedrigstwertige Bit der
+Optionsnummer, wie in Abbildung~\ref{table:optionnumbermask} zu sehen. Ist es gesetzt, so ist die Option kritisch, sonst nicht. Damit sind alle Optionen mit
+einer ungeraden Optionsnummer kritisch.
+
+\subsubsection{Proxy Unsafe/Safe}
+Proxys müssen nicht alle Optionen verstehen können. Aus diesem Grund, ist es für diese Gruppe von
+Endpoints nicht relevant, ob die Optionen kritisch sind oder nicht sind. An dieser Stelle wird
+zwischen Safe-to-Forward oder Unsafe-to-Forward unterschieden. Versteht ein Proxy also eine Option
+nicht, die mit Unsafe-to-Forward markiert ist, muss er diese mit einem \verb!4.02! (Bad Option)
+Fehlercode beantworten.
+Safe-to-Forward Optionen werden von Proxys nochmals unterschieden. Nämlich ob sie zum Cache-Key gehören oder
+nicht.
+Wozu diese zusätzliche Unterscheidung dient, wird bei der Erklärung der ETag-Option (siehe Abschnitt~\ref{option:etag} \nameref{option:etag})
+verdeutlicht.
+Das zweit-niedrigstwertige Bit der Optionsnummer entscheidet darüber, ob die Option Safe-to-Forward
+ist oder nicht, vergleiche Abbildung~\ref{table:optionnumbermask}. Ist es gesetzt, so ist die Option Unsafe-to-Forward. Ist es nicht gesetzt, so
+unterscheiden die 3 nächsthöheren Bits darüber, ob die Option zum Cache-Key gehört oder nicht. Ist
+eines der 3 Bits nicht gesetzt, so gehört die Safe-to-Forward Option zum Cache-Key.
+
+\subsubsection{Repeatable}
+Manche Optionen können in \ac{CoAP} mehrfach vorkommen. Dies ist zum Beispiel wichtig bei der
+\ac{URI}-Path Option (siehe Abschnitt~\ref{option:urioptions} \nameref{option:urioptions}).
+In \cite{draft-ietf-core-coap-13} wird festgelegt, welche Optionen mehrfach in einer Nachricht
+enthalten sein können und welche nicht.
+Kommt eine Option mehrfach vor, welche nicht mehrfach vorkommen darf, muss sie als nichtverstandene
+Option behandelt werden.
+
+\subsubsection{Längen und Standardwerte}
+Wie in Abbildung \ref{table:coapOptions} zu sehen ist, haben fast alle Optionen
+eine Unter-/und Oberbeschränkung ihrer Länge. Hält eine erhaltene Option diesen
+Wertebereich nicht ein, so muss sie ebenso als nichtverstandene Option behandelt
+werden.
+Optionen können Standardwerte besitzen. Möchte man diese Werte verwenden, so
+muss die Option nicht extra übermittelt werden.
+\subsection{Die Optionen im Einzelnen}
+\subsubsection{Uri-Host, Uri-Port, Uri-Path, Uri-Query}
+\label{option:urioptions}
+% 0011 3 host 
+% 0111 7 port 
+% 1011 11 path 
+% 1111 15 query
+Die vier Uri-Optionen dienen dem genauen spezifizieren an welchen Endpoint,
+identifiziert mit einer eindeutigen URI, die CoAP-Nachricht gesendet werden
+soll. Im Draft sind genaue Regeln spezifiziert, wie aus einer URI die
+entsprechenden Optionen erzeugt werden und ebenso der Rückweg. Auf die Regeln
+möchten wir hier aber nicht weiter eingehen. Ein Beispiel soll an dieser Stelle genügen. Aus der
+URI\\
+\verb!coap://[fe80::d2df:9aff:fe72:75bb]:5683/wohnzimmer/temp?location=bottom!\\
+würden
+\begin{itemize}
+  \item eine Uri-Host Option mit dem Inhalt "'fe80::d2df:9aff:fe72:75bb"' ,
+  \item eine Uri-Port Option mit dem Inhalt "'5683"',
+  \item zwei Uri-Path Optionen, jeweils mit dem Inhalt "'wohnzimmer"' und "'temp"' und
+  \item eine Uri-Query Option mit dem Inhalt "'location=bottom"' entstehen.
+\end{itemize}   
+Alle 4 Optionen sind kritisch und Unsafe-to-Forward. Wie auch schon im Beispiel
+zusehen ist, dürfen die Optionen Uri-Path und Uri-Query mehrfach vorkommen.
+\subsubsection{ETag}
+\label{option:etag}
+% 100 4 ETag Repeatable
+Der ETag ist eine Bytesequenz und identifiziert eine lokale Ressource auf einem
+Server. Dieser Server kann den ETag mit ihm möglichen Mitteln erzeugen,
+beispielsweise durch Hashing, Bildung eines Zeitstempels oder Nutzen einer
+Versionierung. Allerdings sollte er je nach Anwendungsumgebung nicht
+zu groß werden. Der Empfänger eines solchen ETags muss die Bytesequenz nicht
+selber auswerten können.
+
+Bei dieser Option ist es wichtig zu unterscheiden, ob sie in einer Request- oder
+einer Response-Nachricht auftaucht. Als Option einer Response-Nachricht dient
+sie als lokaler Bezeichner für die auf dem Server angefragte Repräsentation
+einer Ressource. Dementsprechend darf die Option in einer Response Nachricht nur einmal vorkommen.
+
+Ein Client kann diesen ETag, und möglicherweise zuvor ebenso erhaltene ETags
+dieser Ressource, nutzen, um möglicherweise Traffic zu sparen. Hängt der Client an
+seine Request-Nachrichten seine ihm bekannten ETags an, so kann der Server
+unter Umständen mit einem \verb!2.03! (Valid)-Code signalisieren, dass die
+Repräsentation eine der vom Client mitgelieferten Bezeichner der Ressource
+entspricht. Um bei mehreren mitgelieferten ETags zu unterscheiden, welcher nun
+auf dem Server vorliegt, sendet der Server bei seiner Antwort den aktuellen
+ETag wieder mit.
+
+Der Vorteil der Nutzung von ETags wird einem schnell klar, wenn man sich eine
+Ressource vorstellt, deren Repräsentation mehrere Bytes umfasst. Anstatt immer
+die gesamte Repräsentation zu übertragen, kann es ab der 2. Abfrage
+beispielsweise reichen, den ETag zu bestätigen, wenn sich die Ressource nicht
+geändert hat.
+
+Anhand des ETags soll beispielhaft erklärt werden, wozu die Unterscheidung der
+Safe-to-Forward Optionen in Cache-Key und No-Cache-Key dient.
+Die ETag Option hat die Nummer $4_{10}=100_{2}$ und ist deshalb keine kritische Option, da die
+Anfrage auch ohne Verstehen der Option ausgeführt werden kann. Versteht ein
+Server die ETag Option nicht, da er möglicherweise über kein Verfahren verfügt
+um den ETag zu generieren, muss er diese Option auch nicht unterstützen können.
+Anstelle den ETag auszuwerten, der ihm scheinbar fälschlich zugesendet wurde,
+sendet er einfach eine Response Nachricht zurück und ignoriert diese Option.
+Ebenso ist die Option auch nicht Unsafe-to-Forward. Ein Proxy muss diese Option
+nicht verstehen können, da sie für die Ausführung seiner Aufgabe keine Rolle
+spielt. Die NoCacheKey-Bits \verb!3-5! sehen also wie folgt aus: \verb!001!. Dies bedeutet, dass
+der ETag zum Cache-Key gehört, da der NoCacheKey-Block nicht komplett mit
+Einsen gesetzt ist. Verwendung findet diese Unterscheidung des Cache-Keys
+vorallem bei Proxys, die die Option nicht verstehen können. Sind die
+Proxys auch dafür zuständig, Repräsentationen für Ressourcen zu cachen, so
+fließt diese ETag-Option trotzdem in den Caching-Algorithmus mit ein, obwohl sie
+die Option selbst nicht verstehen.
+\paragraph{Beispiel}
+Im Cache liegt eine Request-Nachricht mit der ETag Option sowie die dazugehörige
+Response-Nachricht.
+Im Falle einer Anfrage mit dem gleichen Cache-Key (im einfachsten Fall hier ist es nur der ETag),
+kann die Response aus dem Cache zurückgeliefert werden.
+Ist allerdings der ETag anders, kann die Response-Nachricht aus dem Cache nicht verwendet werden.
+Diese Unterscheidung kann der Proxy anhand des Cache-Keys treffen, ohne die ETag Option zu kennen.
+\subsubsection{Max-Age}
+\label{option:maxage}
+Die Option Max-Age hat die Nummer $14_{10}=1110_{2}$, und ist somit unkritisch,
+aber Unsafe-to-Forward. Die Option dient dem Caching-Verhalten von Proxys und
+muss deshalb auch zwingend von ihnen verstanden werden. Die, maximal einmalig
+vorkommende, Option in einer Response-Nachricht besagt, dass diese Response-Nachricht
+maximal dem Optionswert in Sekunden entsprechende Zeit im Cache lag.
+Der Wert dieser Option kann zwischen 0 bis zu $2^{32} - 1$~Sekunden (ca.
+136,2~Jahren) variieren.
+Ist die Option nicht in einer Response enthalten, gilt der Standardwert von 60~Sekunden.
+\subsubsection{Location-Path, Location-Query}
+\label{option:locationoptions}
+Die Location-Path-Option mit der Nummer $8_{10}=1000_{2}$, und die
+Location-Query-Option mit der Nummer $20_{10}=10100_{2}$, sind unkritische,
+Safe-to-Forward und wiederholbare Optionen. Sie werden benötigt, um relative
+Pfade anzugeben. Dies wird beispielsweise notwendig, wenn ein Client ein
+POST-Request ausführt und der Server eine neue Ressource anlegt. Dabei gibt er
+mit den Location-*-Optionen den relativen Pfad zu der neuen Ressource an.
+
+\subsubsection{Proxy-Uri, Proxy-Scheme}
+\label{option:proxyoptions}
+Um CoAP die Möglichkeit zu geben, auch in andere Protokolle, wie zum Beispiel
+HTTP, Anfragen zu senden, ist es vorgesehen, sogenannte Forward-Proxys
+einzusetzen. Diese senden dann die Anfrage weiter oder geben eine zur
+Anfrage passende, im Cache vorhandene, Antwort zurück.
+In der Proxy-Uri-Option steht ein absoluter Pfad zu der gewünschten Ressource.
+Anders als bei den Uri-*-Optionen wird hier die gesamte URI in eine Option
+geschrieben. Zudem ist es nicht erlaubt, Uri-*-Optionen und die Proxy-Uri-Option
+in einer Nachricht zu verwenden. Erhält ein Endpoint eine Nachricht mit einer
+Proxy-*-Option, ist aber nicht in der Lage oder nicht dafür konfiguriert, die
+Pakete weiterzuleiten, muss er den Fehlercode \verb!5.05! (Proxying Not Supported) an den
+Client zurücksenden. Proxys, welche die Anfrage weiterleiten können, müssen
+über ihr Netzwerk so viele Kentnisse besitzen wie nötig sind, um zu entscheiden, ob sie die
+Anfrage nochmals an einen Proxy weiterleiten müssen oder direkt den gewünschten Server
+ansprechen.\\\\
+Da die Proxy-Uri-Option als nicht wiederholbar markiert ist, kann es passieren,
+dass die Länge von 1034 nicht ausreicht, um den absoluten Pfad anzugeben. Ebenso
+ist es denkbar, dass mehrere Proxys existieren, welche in verschiedene
+Protokolle weiterleiten können, um eine Ressource anzusprechen. Ist dies der
+Fall, so kann mit Hilfe der Proxy-Scheme-Option gearbeitet werden. Statt nun
+den gesamten absoluten Pfad in eine Option schreiben zu müssen, steht nur der
+Scheme der absoluten URI in der Proxy-Scheme-Option und der Rest der URI
+wird, wie gewohnt, mit den Uri-*-Optionen ausgedrückt.
+Da die Uri-*-Optionen aber keine Fragmente unterstützen, können diese bei
+solchen Anfragen nicht mit angegeben werden.
+
+Diese zwei Optionen sind als kritisch und Unsafe-to-Forward markiert,
+was uns ein Blick auf die Nummern $35_{10}=100011_{2}$ und $39_{10}=100111_{2}$
+schnell verrät.
+
+\subsubsection{Content Format}
+\label{option:contentformat}
+Server können unter Umständen verschiedene Formate zur Darstellung einer
+Repräsentationen ihrer Ressource anbieten.
+Um dem Client mitzuteilen, welches Format nun im Payload einer Response-Nachricht enthalten ist,
+gibt er die Content-Format-Option mit der Nummer $12_{10}=1100_{2}$ an.
+Im Optionswert steht einer der in Abbildung \ref{table:contentformat}
+aufgeführten IDs.
+\begin{figure}[htbp]
+   \centering
+   \begin{minipage}{.94\textwidth}
+   \lstinputlisting[basicstyle=\footnotesize]{sources/tableContentFormats.txt}
+   \caption{CoAP Content Formats}
+   \end{minipage}
+   \label{table:contentformat}
+\end{figure}
+\subsubsection{Accept}
+\label{option:accept}
+Nun kann es aber vorkommen, dass ein Client manche Formate aus der Abbildung \ref{table:contentformat} 
+nicht verarbeiten kann. Um dem Server mitzuteilen, welche Formate er untersützt, kann er die
+Accept-Option nutzen. 
+Die Option darf wiederholt werden.
+Das gibt dem Client die Möglichkeit mehrere bevorzugte Formate anzugeben. 
+Wie einem bei betrachten der Optionsnummer $16_{10}=10000_{2}$ auffällt, ist die Option nicht kritisch.
+Es können also drei verschiedene Situationen auftreten:
+\begin{description}
+\item[Server versteht die Option nicht] Da die Option nicht kritisch ist, führt der Server die Anfrage aus und
+ignoriert dabei die Accept-Option des Clients. Dies kann zur Folge haben, dass
+der Client ein Format zurückbekommt, dass er nicht verarbeiten kann.
+\item[4.06 Not Acceptable] Der Server versteht die Option, kann aber keine der vom Client bevorzugten
+Formate anbieten. Er sendet als Antwort eine Fehlermeldung zurück, in der er
+angibt, dass er keine der gewünschten Formate zur Verfügung hat.  
+\item[2.05 Content] Versteht der Server die Option, so versucht er die Repräsentation der Ressource
+in den Formaten anzugeben, die der Client bevorzugt. Dabei ist die Reihenfolge
+der Optionen entscheidend. Das zuerst genannte ist ebenso auch das vom Client
+am meisten priorisierteste Format.
+\end{description}
+
+\subsubsection{Bedingte Anfragen}
+\label{option:ifmatch}
+% 0001 1 ifmatch Repeatable
+In \ac{CoAP} ist es auch möglich, bedingte Anfragen zu stellen. Sind gewünschte
+Bedingungen erfüllt, so führt der Server die Anfragen aus, als gäbe es
+diese Bedingungen nicht. Sind diese nicht erfüllt, so muss er mit dem
+Fehlercode \verb!4.12! (Precondition Failed) antworten.
+Zwei Möglichkeiten stehen zur Verfügung:
+\begin{description}
+\item[If-Match] In dieser Option kann geprüft
+werden, ob die angefragte Ressource überhaupt existiert. Dazu wird ein leerer
+String als Optionswert mitgesendet oder ein Wert der Ressource verglichen.
+Möchte man beispielsweise einem Lost-Update bei einer \verb!PUT!-Anfrage
+vorbeugen, so kann in der If-Match-Option ein ETag als Optionswert mitgegeben
+werden, was die zuletzt empfangene \verb!GET!-Anfrage geliefert hat. If-Match ist eine
+wiederholbare Option. Bei dem Server werden sie als "`Oder"'-Bedingungen
+interpretiert, d.h. es muss nur eine der Bedingungen erfüllt werden, um die
+Anfrage auszuführen.
+
+\item[If-None-Match] Um paralleles Erzeugen einer Ressource von mehreren Clienten zu
+verhindern gibt es die If-None-Match Option. Sie benötigt keinen Wert und ist
+auch nicht wiederholbar. Die Bedingung wird wahr, wenn die angefragte Ressource
+nicht existiert.
+\end{description}

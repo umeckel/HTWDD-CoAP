@@ -1,0 +1,82 @@
+\documentclass[a4paper, oneside, 12pt]{scrartcl}
+
+\usepackage{fancyhdr}
+\pagestyle{headings}
+
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{hyperref}
+\usepackage[all]{hypcap} %um auf figures, statt auf die Labels zu verweisen
+
+\usepackage{url}
+\usepackage{graphicx}
+
+\setcounter{tocdepth}{3} %um subsubsections mit in den ToC einzugliedern
+
+\usepackage{listingsutf8} \lstset{captionpos=b, basicstyle=\small, extendedchars=true}
+
+\lstset{literate=%
+{Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}2
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+{-}{{\--}}1
+}
+
+\usepackage[nohyperlinks]{acronym}
+\makeindex
+
+\title{CoAP - Constrained Application Protocol}
+\author{Martin~Dönicke, Ulrich~Meckel}
+\date{\today}
+
+\begin{document}
+%\vfill{}
+%\maketitle
+\begin{titlepage}
+\begin{center}
+\vspace*{380pt}
+\huge{\textbf{CoAP\\Constrained Application Protocol}}\\
+\vspace{0.75cm}
+\large{Lehrveranstaltung Sensornetze}\\
+\large{der Fakultät Informatik/Mathematik}\\
+\vspace{1.5cm}
+\end{center}
+\vfill
+Eingereicht von: Martin~Dönicke, Ulrich Meckel\\
+Eingereicht am: 15.~Februar~2013\\
+%Betreuender Hochschullehrer: Prof.~Dr.-Ing.~Robert~Baumgartl\\
+\end{titlepage}
+
+\thispagestyle{empty}
+\newpage
+\tableofcontents
+\include{acronyms}
+\include{glossary}
+\include{introduction}
+\include{structure}
+\include{options}
+\include{requestresponse}
+% Reliablility(4.2/4.3) and Congestion Control draft 4.7 in Verbindung mit 4.8 Transmission Parameters
+% Freshness Modell
+% Validation Model
+% URI ( eher kurz gehalten denk ich )
+% Discovery! ( IPv6 no Broadcast ) (Groupcomm?)
+\include{extensions} % Statt/zusätzlich Groupcomm, [draft-li-core-coap-payload-length-option] ?
+\include{summary}
+\include{appendix}
+% Glossar ?
+\renewcommand{\bibname}{Quellenverzeichnis} %aendert den Namen des Literaturverzeichnisses
+\bibliography{rfc,drafts,books}
+\bibliographystyle{styles/alphadin}
+\addcontentsline{toc}{section}{Quellenverzeichnis}
+
+\dedication{ }
+%\maketitle\thispagestyle{empty}
+\end{document}
+\usepackage[plainpages=false]{hyperref}

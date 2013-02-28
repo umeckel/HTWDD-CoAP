@@ -1,0 +1,34 @@
+\section{Zusammenfassung}
+\ac{CoAP} implementiert eine \ac{REST}ful Architektur mit möglichst wenig Overhead,
+Was es vorallem im Einsatz mit Sensornetzen interessant macht: Zum einen ist es
+möglich, Sensorwerte abzufragen, zum anderen bietet es auch die Möglichkeit, Werte
+an den Endpoints zu ändern. Durch das Verwenden von \ac{UDP} als Transportschicht,
+ist zwar die Zuverlässigkeit nicht mehr gesichert, doch spart man einiges an
+Overhead gegenüber \ac{TCP}. Ist man daran interessiert, dennoch
+Zuverlässigkeitsmechanismen zu benutzen, so bietet auch dort \ac{CoAP}
+Möglichkeiten. Weiterhin bietet das Verwenden einer \ac{REST}-Architektur leichte
+Anbindung an andere \ac{REST}-Netzwerke wie z.B. \ac{HTTP}. Ein Mapping von \ac{CoAP}
+auf \ac{HTTP} wurde in diesem Dokument nicht beschrieben, doch ist dies auch bereits
+in \cite{draft-ietf-core-coap-13} beschrieben. Durch Proxys und den Einsatz von den
+oben beschriebenen Proxy-*-Optionen, ist es möglich auch aus dem \ac{CoAP} Netzwerk
+heraus oder hinein Anfragen zu stellen.
+
+Vorallem wenn man die Mailingliste von \ac{CoAP} verfolgt, stellt man fest, dass
+es zwar doch noch an einigen Stellen zu nicht-vorhergesehenen Fehlern kommt, doch
+durch die aktive Arbeit mehrerer Leute wird dies ausführlich diskutiert und
+Änderungen werden im Draft festgehalten. Trotz dieser auftretenen Probleme ist
+\ac{CoAP} in einem Zustand, in dem es implementiert und bearbeitet werden kann.
+Bei der Implementierung allerdings scheitert es derzeit. Nur für wenige Sprachen
+sind derzeit Implementierungen einzelner Leute im Internet zu finden. Immerhin
+für die Programmiersprache C gibt es eine aktive
+Gruppe\footnote{\url{http://libcoap.sourceforge.net/}}, welche versucht ihre
+Implementierung auf dem aktuellen Stand zu halten.
+
+Um \ac{CoAP} hinsichtlich Effizienz zu beurteilen fehlt es dadurch leider an
+Testberichten. Doch die Aufmerksamkeit steigt und nachdem nun die Entwicklung
+einen Stand erreicht hat, indem es sich lohnt, eine Bibliothek zu programmieren,
+wird es schon möglich sein, bessere Aussagen zu treffen. Aus theorethischer Sicht
+macht CoAP definitiv Sinn und hat gute Aussichten für die Zukunft, vorallem im
+Bereich Sensornetzen und anderen Low-Power \ac{M2M}-Netzwerken.
+
+ 

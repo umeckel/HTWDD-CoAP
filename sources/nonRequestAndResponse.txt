@@ -1,0 +1,13 @@
+                         Client              Server
+                            |                  |
+                            |   NON [0x7a11]   |
+                            | GET /temperature |
+                            |   (Token 0x74)   |
+                            +----------------->|
+                            |                  |
+                            |   NON [0x23bc]   |
+                            |   2.05 Content   |
+                            |   (Token 0x74)   |
+                            |     "22.5 C"     |
+                            |<-----------------+
+                            |                  |
